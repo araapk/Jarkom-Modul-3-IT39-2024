@@ -1,4 +1,4 @@
-# Laporan Resmi Praktikum Jarkom Modul 2 2024
+# Laporan Resmi Praktikum Jarkom Modul 3 2024
 
 ---
 ## Anggota Kelompok
@@ -151,3 +151,9 @@ iface eth0 inet static
 ```
 
 ### Install Dependencies
+Paradis (DHCP Relay)
+```
+apt-get update
+apt-get install isc-dhcp-relay -y
+```
+
