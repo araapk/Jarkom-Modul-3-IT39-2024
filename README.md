@@ -1,37 +1,65 @@
 # Laporan Resmi Praktikum Jarkom Modul 3 2024
 
 ---
-## Anggota Kelompok
-- Rafika Az Zahra Kusumastuti  (5027231050)
-- Johanes Edward Nathanael     (5027231067)
+|Nama  | NRP |
+|--|--|
+| Johanes Edward Nathanael | 5027231057 |
+| Rafika Az Zahra Kusumastuti | 5027231050 |
 
 ## Daftar Isi
-- [Topologi](#topologi)
-- [Nomor-0](#nomor-0)
-- [Nomor-1](#nomor-1)
-- [Nomor-2](#nomor-2)
-- [Nomor-3](#nomor-3)
-- [Nomor-4](#nomor-4)
-- [Nomor-5](#nomor-5)
-- [Gabungan-Nomor-1-5](#gabungan-nomor-1-5)
-- [Nomor-6](#nomor-6)
-- [Nomor-7](#nomor-7)
-- [Nomor-8](#nomor-8)
-- [Nomor-9](#nomor-9)
-- [Nomor-10](#nomor-10)
-- [Nomor-11](#nomor-11)
-- [Nomor-12](#nomor-12)
-- [Nomor-13](#nomor-13)
+- [Laporan Resmi Praktikum Jarkom Modul 3 2024](#laporan-resmi-praktikum-jarkom-modul-3-2024)
+	- [Daftar Isi](#daftar-isi)
+	- [Topologi](#topologi)
+	- [Konfigurasi](#konfigurasi)
+	- [Set .bashrc](#set-bashrc)
+	- [Nomor 0](#nomor-0)
+	- [Nomor 1](#nomor-1)
+	- [Nomor 2](#nomor-2)
+	- [Nomor 3](#nomor-3)
+	- [Nomor 4](#nomor-4)
+	- [Nomor 5](#nomor-5)
+	- [Gabungan Nomor 1-5](#gabungan-nomor-1-5)
+	- [Nomor 6](#nomor-6)
+	- [Nomor 7](#nomor-7)
+	- [Nomor 8](#nomor-8)
+	- [Nomor 9](#nomor-9)
+	- [Nomor 10](#nomor-10)
+	- [Nomor 11](#nomor-11)
+	- [Nomor 12](#nomor-12)
+	- [Nomor 13](#nomor-13)
 
 ## Topologi
 ![Screenshot 2024-10-22 224446](https://github.com/user-attachments/assets/e0b9a50f-7d60-4963-94a9-832f7b257f6b)
 
-### Network Configuration
-Paradis (DHCP Relay)
+
+## Konfigurasi
+
+| **Name**      | **Interface** | **Address**   | **Netmask**        | **Gateway**   | **Configuration Type** |
+|---------------|---------------|---------------|--------------------|--------------|------------------------|
+| **Paradis**   | eth0          | -             | -                  | -            | DHCP                   |
+|               | eth1          | 192.236.1.1     | 255.255.255.0      | -            | Static                 |
+|               | eth2          | 192.236.2.1     | 255.255.255.0      | -            | Static                 |
+|               | eth3          | 192.236.3.1     | 255.255.255.0      | -            | Static                 |
+|               | eth4          | 192.236.4.1     | 255.255.255.0      | -            | Static                 |
+| **Annie**     | eth0          | 192.236.1.2     | 255.255.255.0      | 192.236.1.1    | Static                 |
+| **Berthold**  | eth0          | 192.236.1.3     | 255.255.255.0      | 192.236.1.1    | Static                 |
+| **Reiner**    | eth0          | 192.236.1.4     | 255.255.255.0      | 192.236.1.1    | Static                 |
+| **Armin**     | eth0          | 192.236.2.2     | 255.255.255.0      | 192.236.2.1    | Static                 |
+| **Eren**      | eth0          | 192.236.2.3     | 255.255.255.0      | 192.236.2.1    | Static                 |
+| **Mikasa**    | eth0          | 192.236.2.4     | 255.255.255.0      | 192.236.2.1    | Static                 |
+| **Beast**     | eth0          | 192.236.3.2     | 255.255.255.0      | 192.236.3.1    | Static                 |
+| **Colossal**  | eth0          | 192.236.3.3     | 255.255.255.0      | 192.236.3.1    | Static                 |
+| **Warhammer** | eth0          | 192.236.3.4     | 255.255.255.0      | 192.236.3.1    | Static                 |
+| **Fritz**     | eth0          | 192.236.4.2     | 255.255.255.0      | 192.236.4.1    | Static                 |
+| **Tybur**     | eth0          | 192.236.4.3     | 255.255.255.0      | 192.236.4.1    | Static                 |
+| **Zeke & Erwin** | eth0       | -             | -                  | -            | DHCP                   |
+
+
+**Paradis (Router & DHCP Relay)**
 ```
+# DHCP config for eth0
 auto eth0
 iface eth0 inet dhcp
-up iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
 auto eth1
 iface eth1 inet static
@@ -54,174 +82,173 @@ iface eth4 inet static
 	netmask 255.255.255.0
 ```
 
-Annie (Laravel Worker)
+**Annie (Laravel Worker)**
 ```
 auto eth0
 iface eth0 inet static
 	address 192.236.1.2
 	netmask 255.255.255.0
 	gateway 192.236.1.1
-up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
-Bertholdt (Laravel Worker)
+**Berthold (Laravel Worker)**
 ```
 auto eth0
 iface eth0 inet static
 	address 192.236.1.3
 	netmask 255.255.255.0
 	gateway 192.236.1.1
-up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
-Reiner (Laravel Worker)
+**Reiner (Laravel Worker)**
 ```
 auto eth0
 iface eth0 inet static
 	address 192.236.1.4
 	netmask 255.255.255.0
 	gateway 192.236.1.1
-up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
-Zeke (Client)
-```
-auto eth0
-iface eth0 inet dhcp
-```
-
-Armin (PHP Worker)
+**Armin (PHP Worker)**
 ```
 auto eth0
 iface eth0 inet static
 	address 192.236.2.2
 	netmask 255.255.255.0
 	gateway 192.236.2.1
-up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
-Eren (PHP Worker)
+**Eren (PHP Worker)**
 ```
 auto eth0
 iface eth0 inet static
 	address 192.236.2.3
 	netmask 255.255.255.0
 	gateway 192.236.2.1
-up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
-Mikasa (PHP Worker)
+**Mikasa (PHP Worker)**
 ```
 auto eth0
 iface eth0 inet static
 	address 192.236.2.4
 	netmask 255.255.255.0
 	gateway 192.236.2.1
-up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
-Erwin (Client) 
-```
-auto eth0
-iface eth0 inet dhcp
-```
-
-Beast (Load Balancer Laravel)
+**Beast (Laravel LB)**
 ```
 auto eth0
 iface eth0 inet static
 	address 192.236.3.2
 	netmask 255.255.255.0
 	gateway 192.236.3.1
-up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
-Colossal (Load Balancer PHP)
+**Colossal (PHP LB)**
 ```
 auto eth0
 iface eth0 inet static
 	address 192.236.3.3
 	netmask 255.255.255.0
 	gateway 192.236.3.1
-up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
-Warhammer (Database Server)
+**Warhammer (Database)**
 ```
 auto eth0
 iface eth0 inet static
 	address 192.236.3.4
 	netmask 255.255.255.0
 	gateway 192.236.3.1
-up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
-Fritz (DNS Server)
+**Fritz (DNS Server)**
+
 ```
 auto eth0
 iface eth0 inet static
 	address 192.236.4.2
 	netmask 255.255.255.0
 	gateway 192.236.4.1
-up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
-Tybur (DHCP Server)
+**Tybur (DHCP Server)**
+
 ```
 auto eth0
 iface eth0 inet static
 	address 192.236.4.3
 	netmask 255.255.255.0
 	gateway 192.236.4.1
-up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
-### Install Dependencies
-Paradis (DHCP Relay)
+**Zeke & Erwin (Client)**
 ```
+auto eth0
+iface eth0 inet dhcp
+```
+
+## Set .bashrc
+
+**Paradis (DHCP Relay)**
+```
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE -s 192.236.0.0/16
 apt-get update
 apt-get install isc-dhcp-relay -y
+service isc-dhcp-relay start
 ```
 
-Tybur (DHCP Server)
+**Tybur (DHCP Server)**
 ```
+echo 'nameserver 192.236.4.2' > /etc/resolv.conf
 apt-get update
 apt-get install isc-dhcp-server -y
+service isc-dhcp-server restart
+service isc-dhcp-server status
 ```
 
-Fritz (DNS Server)
+**Fritz (DNS Server)**
 ```
+echo 'nameserver 192.168.122.1' > /etc/resolv.conf
 apt-get update
 apt-get install bind9 -y
 ```
 
-Beast dan Colossal (Load Balancer)
+**Warhammer (Database Server)**
 ```
-apt-get update
-apt-get install apache2-utils -y
-apt-get install nginx -y
-apt-get install lynx -y
-```
-
-Warhammer (Database Server)
-```
+echo 'nameserver 192.236.4.2' > /etc/resolv.conf
 apt-get update
 apt-get install mariadb-server -y
 ```
 
-Annie, Bertholdt, dan Reiner (Laravel Worker)
+**Beast & Colossal (Load Balancer)**
 ```
+echo 'nameserver 192.236.4.2' > /etc/resolv.conf
 apt-get update
-apt-get install mariadb-server -y
+apt-get install bind9 apache2-utils nginx -y
+
+service nginx start
 ```
 
-Zeke dan Erwin (CLient)
+**Annie, Bertholdt, Reiner (Laravel Worker)**
+``` 
+echo 'nameserver 10.74.4.2' > /etc/resolv.conf
+apt-get update
+apt-get install mariadb-client -y
+```
+
+**Armin, Eren, Mikasa (PHP Worker)**
+```
+echo 'nameserver 192.236.4.2' > /etc/resolv.conf
+apt-get update
+apt-get install lynx curl unzip nginx software-properties-common php7.3 php7.3-fpm -y
+```
+
+**Zeke & Erwin (Client)**
 ```
 apt-get update
-apt-get install lynx -y
-apt-get install htop -y
-apt-get install apache2-utils -y
-apt-get install jq -y
+apt-get install lynx htop apache2-utils jq -y
 ```
 
 
