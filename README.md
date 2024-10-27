@@ -13,6 +13,7 @@
 - [Nomor-3](#nomor-3)
 - [Nomor-4](#nomor-4)
 - [Nomor-5](#nomor-5)
+- [Gabungan-Nomor-1-5](#gabungan-nomor-1-5)
 - [Nomor-6](#nomor-6)
 - [Nomor-7](#nomor-7)
 - [Nomor-8](#nomor-8)
@@ -30,6 +31,7 @@ Paradis (DHCP Relay)
 ```
 auto eth0
 iface eth0 inet dhcp
+up iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
 auto eth1
 iface eth1 inet static
@@ -59,6 +61,7 @@ iface eth0 inet static
 	address 192.236.1.2
 	netmask 255.255.255.0
 	gateway 192.236.1.1
+up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
 Bertholdt (Laravel Worker)
@@ -68,6 +71,7 @@ iface eth0 inet static
 	address 192.236.1.3
 	netmask 255.255.255.0
 	gateway 192.236.1.1
+up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
 Reiner (Laravel Worker)
@@ -77,6 +81,7 @@ iface eth0 inet static
 	address 192.236.1.4
 	netmask 255.255.255.0
 	gateway 192.236.1.1
+up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
 Zeke (Client)
@@ -92,6 +97,7 @@ iface eth0 inet static
 	address 192.236.2.2
 	netmask 255.255.255.0
 	gateway 192.236.2.1
+up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
 Eren (PHP Worker)
@@ -101,6 +107,7 @@ iface eth0 inet static
 	address 192.236.2.3
 	netmask 255.255.255.0
 	gateway 192.236.2.1
+up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
 Mikasa (PHP Worker)
@@ -110,6 +117,7 @@ iface eth0 inet static
 	address 192.236.2.4
 	netmask 255.255.255.0
 	gateway 192.236.2.1
+up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
 Erwin (Client) 
@@ -125,6 +133,7 @@ iface eth0 inet static
 	address 192.236.3.2
 	netmask 255.255.255.0
 	gateway 192.236.3.1
+up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
 Colossal (Load Balancer PHP)
@@ -134,6 +143,7 @@ iface eth0 inet static
 	address 192.236.3.3
 	netmask 255.255.255.0
 	gateway 192.236.3.1
+up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
 Warhammer (Database Server)
@@ -143,6 +153,7 @@ iface eth0 inet static
 	address 192.236.3.4
 	netmask 255.255.255.0
 	gateway 192.236.3.1
+up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
 Fritz (DNS Server)
@@ -152,6 +163,7 @@ iface eth0 inet static
 	address 192.236.4.2
 	netmask 255.255.255.0
 	gateway 192.236.4.1
+up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
 Tybur (DHCP Server)
@@ -161,6 +173,7 @@ iface eth0 inet static
 	address 192.236.4.3
 	netmask 255.255.255.0
 	gateway 192.236.4.1
+up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
 ### Install Dependencies
@@ -215,6 +228,75 @@ apt-get install jq -y
 ## Nomor 0
 Pulau Paradis telah menjadi tempat yang damai selama 1000 tahun, namun kedamaian tersebut tidak bertahan selamanya. Perang antara kaum Marley dan Eldia telah mencapai puncak. Kaum Marley yang dipimpin oleh Zeke, me-register domain name marley.yyy.com untuk worker Laravel mengarah pada Annie. Namun ternyata tidak hanya kaum Marley saja yang berinisiasi, kaum Eldia ternyata sudah mendaftarkan domain name eldia.yyy.com untuk worker PHP (0) mengarah pada Armin.
 
+Buat script pada DNS Server atau Fritz
+```
+apt-get update
+apt-get install bind9 -y
+
+forward="options {
+directory \"/var/cache/bind\";
+forwarders {
+  	   192.168.122.1;
+};
+
+allow-query{any;};
+listen-on-v6 { any; };
+};
+"
+echo "$forward" > /etc/bind/named.conf.options
+
+echo "zone \"marley.it39.com\" {
+	type master;
+	file \"/etc/bind/jarkom/marley.it39.com\";
+};
+
+zone \"eldia.it39.com\" {
+	type master;
+	file \"/etc/bind/jarkom/eldia.it39.com\";
+};
+" > /etc/bind/named.conf.local
+
+mkdir /etc/bind/jarkom
+
+riegel="
+;
+;BIND data file for local loopback interface
+;
+\$TTL    604800
+@    IN    SOA    marley.it39.com. root.marley.it39.com. (
+        2        ; Serial
+                604800        ; Refresh
+                86400        ; Retry
+                2419200        ; Expire
+                604800 )    ; Negative Cache TTL
+;                   
+@    IN    NS    marley.it39.com.
+@       IN    A    192.236.1.2
+"
+echo "$riegel" > /etc/bind/jarkom/marley.it39.com
+
+granz="
+;
+;BIND data file for local loopback interface
+;
+\$TTL    604800
+@    IN    SOA    eldia.it39.com. root.eldia.it39.com. (
+        2        ; Serial
+                604800        ; Refresh
+                86400        ; Retry
+                2419200        ; Expire
+                604800 )    ; Negative Cache TTL
+;                   
+@    IN    NS    eldia.it39.com.
+@       IN    A    192.236.2.2
+"
+echo "$granz" > /etc/bind/jarkom/eldia.it39.com
+
+service bind9 restart
+```
+
+
+
 ## Nomor 1
 Semua Client harus menggunakan konfigurasi ip address dari keluarga Tybur (dhcp).
 
@@ -229,6 +311,91 @@ Client mendapatkan DNS dari keluarga Fritz dan dapat terhubung dengan internet m
 
 ## Nomor 5
 Dikarenakan keluarga Tybur tidak menyukai kaum eldia, maka mereka hanya meminjamkan ip address ke kaum eldia selama 6 menit. Namun untuk kaum marley, keluarga Tybur meminjamkan ip address selama 30 menit. Waktu maksimal dialokasikan untuk peminjaman alamat IP selama 87 menit. (5)
+
+## Gabungan Nomor 1-5
+Buat script di Router (DHCP Relay)) atau Paradis
+```
+apt-get update
+apt install isc-dhcp-relay -y
+
+service isc-dhcp-relay start 
+
+echo '# Defaults for isc-dhcp-relay initscript
+
+# sourced by /etc/init.d/isc-dhcp-relay
+# installed at /etc/default/isc-dhcp-relay by the maintainer scripts
+
+#
+# This is a POSIX shell fragment
+#
+
+# What servers should the DHCP relay forward requests to?
+SERVERS="192.236.4.3" 
+
+# On what interfaces should the DHCP relay (dhrelay) serve DHCP requests?
+INTERFACES="eth1 eth2 eth3 eth4"
+
+# Additional options that are passed to the DHCP relay daemon?
+OPTIONS=""' > /etc/default/isc-dhcp-relay
+
+
+echo net.ipv4.ip_forward=1 > /etc/sysctl.conf
+
+service isc-dhcp-relay restart
+```
+
+Kemudian buat script di DHCP Server atau Tybur
+```
+apt-get update
+apt-get install isc-dhcp-server -y
+
+echo 'INTERFACESv4="eth0"
+INTERFACESv6=""
+' > /etc/default/isc-dhcp-server
+
+subnet="option domain-name \"example.org\";
+option domain-name-servers ns1.example.org, ns2.example.org;
+
+default-lease-time 600;
+max-lease-time 7200;
+
+ddns-update-style-none;
+
+subnet 192.236.1.0 netmask 255.255.255.0 {
+    range 192.236.1.5 192.236.1.25;
+    range 192.236.1.50 192.236.1.100;
+    option routers 192.236.1.1;
+    option broadcast-address 192.236.1.255;
+    option domain-name-servers 192.236.4.2;
+    default-lease-time 360;
+    max-lease-time 5220;
+}
+
+subnet 192.236.2.0 netmask 255.255.255.0 {
+    range 192.236.2.9 192.236.2.27;
+    range 192.236.2.81 192.236.2.243;
+    option routers 192.236.2.1;
+    option broadcast-address 192.236.2.255;
+    option domain-name-servers 192.236.4.2;
+    default-lease-time 1800;
+    max-lease-time 5220;
+}
+
+subnet 192.236.3.0 netmask 255.255.255.0 {
+}
+
+subnet 192.236.4.0 netmask 255.255.255.0 {
+}
+
+"
+echo "$subnet" > /etc/dhcp/dhcpd.conf
+
+service isc-dhcp-server restart
+```
+![Screenshot 2024-10-27 222621](https://github.com/user-attachments/assets/e1038658-c351-4278-98cc-9dce3950cfe2)
+![Screenshot 2024-10-27 222635](https://github.com/user-attachments/assets/2e314295-031c-443d-b44a-0ba880922cf7)
+
+
 
 ## Nomor 6
 Armin berinisiasi untuk memerintahkan setiap worker PHP untuk melakukan konfigurasi virtual host untuk website berikut https://intip.in/BangsaEldia dengan menggunakan php 7.3 (6)
